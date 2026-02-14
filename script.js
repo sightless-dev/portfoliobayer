@@ -1,6 +1,6 @@
 const links = document.querySelectorAll('a[href^="#"]');
-links.forEach(link => {
-  link.addEventListener('click', e => {
+links.forEach((link) => {
+  link.addEventListener('click', (e) => {
     const id = link.getAttribute('href');
     const target = document.querySelector(id);
     if (!target) return;
@@ -9,17 +9,23 @@ links.forEach(link => {
   });
 });
 
-const cards = document.querySelectorAll('.tilt');
-cards.forEach(card => {
-  card.addEventListener('mousemove', (e) => {
-    const rect = card.getBoundingClientRect();
-    const x = e.clientX - rect.left;
-    const y = e.clientY - rect.top;
-    const rx = -(y / rect.height - 0.5) * 8;
-    const ry = (x / rect.width - 0.5) * 10;
-    card.style.transform = `perspective(600px) rotateX(${rx.toFixed(2)}deg) rotateY(${ry.toFixed(2)}deg)`;
-  });
-  card.addEventListener('mouseleave', () => {
-    card.style.transform = 'perspective(600px) rotateX(0deg) rotateY(0deg)';
+const observer = new IntersectionObserver(
+  (entries) => {
+    entries.forEach((entry) => {
+      if (entry.isIntersecting) entry.target.classList.add('show');
+    });
+  },
+  { threshold: 0.18 }
+);
+
+document.querySelectorAll('.reveal').forEach((el) => observer.observe(el));
+
+const auroras = document.querySelectorAll('.bg-aurora');
+document.addEventListener('mousemove', (e) => {
+  const x = (e.clientX / window.innerWidth - 0.5) * 10;
+  const y = (e.clientY / window.innerHeight - 0.5) * 10;
+  auroras.forEach((el, i) => {
+    const factor = (i + 1) * 0.35;
+    el.style.transform = `translate(${x * factor}px, ${y * factor}px)`;
   });
 });
